@@ -23,4 +23,18 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("connected to socket");
   socket.emit("me", socket.id);
+
+  socket.on("callUser", (data) => {
+    console.log("call user");
+    io.to(data.userToCall).emit("callUser", {
+      callerID: data.from,
+      callerName: data.callerName,
+      signalData: data.signalData,
+    });
+  });
+
+  socket.on("answerCall", (data) => {
+    console.log("answer call");
+    io.to(data.to).emit("callAccepted", data.signal);
+  });
 });
