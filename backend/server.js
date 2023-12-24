@@ -35,6 +35,18 @@ io.on("connection", (socket) => {
 
   socket.on("answerCall", (data) => {
     console.log("answer call");
-    io.to(data.to).emit("callAccepted", data.signal);
+    io.to(data.to).emit("callAccepted", {
+      signal: data.signal,
+      callerName: data.callerName,
+    });
+  });
+
+  // socket.on("disconnect", () => {
+  //   socket.broadcast.emit("callEnd");
+  // });
+
+  socket.on("forceDisconnect", function () {
+    console.log("force disconnect");
+    socket.broadcast.emit("callEnd");
   });
 });
