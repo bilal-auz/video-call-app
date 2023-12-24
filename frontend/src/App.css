@@ -1,4 +1,7 @@
 .App {
+  background-color: #161b21;
+  min-height: 100vh;
+
   text-align: center;
 }
 
@@ -14,7 +17,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #161b21;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,6 +29,14 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.glass {
+  background: rgba(0, 0, 0, 0.615);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.382);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 @keyframes App-logo-spin {
