@@ -6,6 +6,7 @@ const Peer = require("simple-peer");
 
 const socket = io("http://localhost:8080");
 function App() {
+  const [isCameraAvailable, setIsCameraAvailable] = useState(false);
   const [userName, setUserName] = useState("");
   const [myId, setMyId] = useState("");
   const [userNameSubmitted, setUserNameSubmitted] = useState(false);
@@ -29,8 +30,12 @@ function App() {
   const peerRef = useRef<any>(null);
 
   useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+    if (!navigator?.mediaDevices?.getUserMedia)
+      return setIsCameraAvailable(false);
+
+    setIsCameraAvailable(true);
+    navigator?.mediaDevices
+      ?.getUserMedia({ video: true, audio: true })
       .then((stream) => {
         setStream(stream);
         if (myVideoRef.current) {
@@ -79,6 +84,7 @@ function App() {
   };
 
   const makeCall = () => {
+    if (!isCameraAvailable) return alert("Camera is not available");
     if (userName == "") return alert("Please enter your name first");
     setState("calling");
     setGuestConnected(true);
@@ -119,6 +125,8 @@ function App() {
   };
 
   const answerCall = () => {
+    if (!isCameraAvailable) return alert("Camera is not available");
+
     //when user accept the call
     if (userName == "") return alert("Please enter your name first");
     setState("calling");
@@ -210,18 +218,20 @@ function App() {
             </p>
             <div className="flex flex-col justify-start items-center mt-5">
               <div className="flex flex-col md:flex-row justify-center items-center bg-[#1f272f] rounded-lg p-5">
-                <div className="flex justify-center items-center mb-5 md:mr-5 md:mb-0 w-80 h-60 relative rounded-lg ">
-                  <video
-                    playsInline
-                    autoPlay
-                    ref={myVideoRef}
-                    muted
-                    className="rounded-lg w-80 [transform:rotateY(180deg)] border-2 border-[#15E8D8]"
-                  ></video>
-                  <p className="glass text-[0.80rem] capitalize text-white absolute bottom-2 left-2 px-3">
-                    {userNameSubmitted && userName}
-                  </p>
-                  {/* {!userNameSubmitted && (
+                {(isCameraAvailable && (
+                  <>
+                    <div className="flex justify-center items-center mb-5 md:mr-5 md:mb-0 w-80 h-60 relative rounded-lg ">
+                      <video
+                        playsInline
+                        autoPlay
+                        ref={myVideoRef}
+                        muted
+                        className="rounded-lg w-80 [transform:rotateY(180deg)] border-2 border-[#15E8D8]"
+                      ></video>
+                      <p className="glass text-[0.80rem] capitalize text-white absolute bottom-2 left-2 px-3">
+                        {userNameSubmitted && userName}
+                      </p>
+                      {/* {!userNameSubmitted && (
                 <input
                   type="text"
                   placeholder="Your name..."
@@ -232,33 +242,42 @@ function App() {
                   onKeyDown={(e) => e.key === "Enter" && submitUserName()}
                 />
               )} */}
-                </div>
-
-                <div className="flex flex-row justify-center items-center relative w-80 h-60 bg-gray-900 rounded-lg">
-                  {guestConnected && (
-                    <>
-                      <video
-                        playsInline
-                        autoPlay
-                        ref={guestRef}
-                        className="rounded-lg [transform:rotateY(180deg)] "
-                      ></video>
-                      <p className="absolute bottom-0 left-0 bg-black px-1 text-xs rounded-bl">
-                        {guestName}
-                      </p>
-                    </>
-                  )}
-
-                  {(!callAccepted && call.isReceivingCall && (
-                    <div className="absolute">
-                      <p>{call.callerName} is Calling</p>
-                      <button onClick={answerCall} className="btn btn-xs">
-                        Answer
-                      </button>
                     </div>
-                  )) ||
-                    (!guestConnected && <p className="absolute">Offline</p>)}
-                </div>
+
+                    <div className="flex flex-row justify-center items-center relative w-80 h-60 bg-gray-900 rounded-lg">
+                      {guestConnected && (
+                        <>
+                          <video
+                            playsInline
+                            autoPlay
+                            ref={guestRef}
+                            className="rounded-lg [transform:rotateY(180deg)] "
+                          ></video>
+                          <p className="absolute bottom-0 left-0 bg-black px-1 text-xs rounded-bl">
+                            {guestName}
+                          </p>
+                        </>
+                      )}
+
+                      {(!callAccepted && call.isReceivingCall && (
+                        <div className="absolute">
+                          <p>{call.callerName} is Calling</p>
+                          <button onClick={answerCall} className="btn btn-xs">
+                            Answer
+                          </button>
+                        </div>
+                      )) ||
+                        (!guestConnected && (
+                          <p className="absolute text-sm">Offline</p>
+                        ))}
+                    </div>
+                  </>
+                )) || (
+                  <p className="text-[#15E8D8] bg-[#1f272f]">
+                    Camera is not available mobile.
+                    <br /> Please use your nearest PC
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col md:flex-row  justify-around items-center w-full mt-5 bg-[#1f272f] rounded-lg p-5">
@@ -280,17 +299,17 @@ function App() {
 
                   <button
                     className="btn text-[#15E8D8]"
-                    onClick={() => navigator.clipboard.writeText(myId)}
+                    onClick={() => navigator?.clipboard?.writeText(myId)}
                   >
                     Copy your ID
                     <svg
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 color"
+                      className="w-4"
                     >
                       <path
                         d="m6 18v3c0 .621.52 1 1 1h14c.478 0 1-.379 1-1v-14c0-.478-.379-1-1-1h-3v-3c0-.478-.379-1-1-1h-14c-.62 0-1 .519-1 1v14c0 .621.52 1 1 1zm10.5-12h-9.5c-.62 0-1 .519-1 1v9.5h-2.5v-13h13z"
-                        fill-rule="nonzero"
+                        fill="#15E8D8"
                       />
                     </svg>
                   </button>
@@ -336,10 +355,7 @@ function App() {
                       </button>
                     </div>
                   )) || (
-                    <button
-                      className="btn join-item text-[#15E8D8]"
-                      onClick={makeCall}
-                    >
+                    <button className="btn text-[#15E8D8]" onClick={makeCall}>
                       Call
                     </button>
                   )}
