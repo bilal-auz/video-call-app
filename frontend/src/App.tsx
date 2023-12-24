@@ -30,7 +30,7 @@ function App() {
 
   useEffect(() => {
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false })
+      .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         setStream(stream);
         if (myVideoRef.current) {
@@ -79,7 +79,7 @@ function App() {
   };
 
   const makeCall = () => {
-    if (userName == "") return;
+    if (userName == "") return alert("Please enter your name first");
     setState("calling");
     setGuestConnected(true);
     setGuestName("Calling: " + guestId);
@@ -120,6 +120,7 @@ function App() {
 
   const answerCall = () => {
     //when user accept the call
+    if (userName == "") return alert("Please enter your name first");
     setState("calling");
     setCallAccepted(true);
 
@@ -154,7 +155,13 @@ function App() {
   };
 
   const handleMic = () => {
-    setMicOn(!micOn);
+    // setMicOn(!micOn);
+    if (stream == undefined) return;
+    const audioTracks = stream.getAudioTracks();
+    if (audioTracks.length > 0) {
+      audioTracks[0].enabled = !audioTracks[0].enabled;
+      setMicOn(audioTracks[0].enabled);
+    }
   };
 
   const handleSpeaker = () => {
@@ -171,6 +178,7 @@ function App() {
                 playsInline
                 autoPlay
                 ref={myVideoRef}
+                muted
                 className="rounded-lg w-80 [transform:rotateY(180deg)]"
               ></video>
               <p className="absolute bottom-0 left-0 bg-black px-1 text-xs rounded-bl">
@@ -221,15 +229,19 @@ function App() {
               <div className="flex flex-row">
                 <button onClick={handleMic}>
                   {(micOn && (
-                    <img className="w-8" src="assets/icons/micOn.svg" alt="" />
+                    <img className="w-12" src="assets/icons/micOn.svg" alt="" />
                   )) || (
-                    <img className="w-8" src="assets/icons/micOff.svg" alt="" />
+                    <img
+                      className="w-12"
+                      src="assets/icons/micOff.svg"
+                      alt=""
+                    />
                   )}
                 </button>
                 <button onClick={hangUp}>
-                  <img className="w-12" src="assets/icons/hangUp.svg" alt="" />
+                  <img className="w-16" src="assets/icons/hangUp.svg" alt="" />
                 </button>
-                <button onClick={handleSpeaker}>
+                {/* <button onClick={handleSpeaker}>
                   {(speakerOn && (
                     <img
                       className="w-8"
@@ -243,13 +255,13 @@ function App() {
                       alt=""
                     />
                   )}
-                </button>
+                </button> */}
               </div>
             )) || (
               <div className="join">
                 <input
                   className="input input-bordered join-item"
-                  placeholder="Call ID"
+                  placeholder="id to call"
                   onChange={(e) => {
                     setGuestId(e.target.value);
                   }}
