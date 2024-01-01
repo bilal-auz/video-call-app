@@ -4,12 +4,14 @@ import { SocketContext } from "../context/VideoCallContext";
 function VideoPlayer() {
   const {
     myName,
+    myId,
+    guestId,
     isCameraAvailable,
     myVideoRef,
     guestRef,
     callRoom,
     guestConnected,
-    answerCall,
+    isCalling,
   } = useContext(SocketContext);
   return (
     <div className="flex flex-col md:flex-row justify-center items-center bg-[#1f272f] rounded-lg p-5">
@@ -29,7 +31,7 @@ function VideoPlayer() {
           </div>
 
           <div className="flex flex-row justify-center items-center relative w-80 h-60 bg-gray-900 rounded-lg">
-            {guestConnected && (
+            {(guestConnected && (
               <>
                 <video
                   playsInline
@@ -37,10 +39,18 @@ function VideoPlayer() {
                   ref={guestRef}
                   className="rounded-lg [transform:rotateY(180deg)] "
                 ></video>
-                <p className="absolute bottom-0 left-0 bg-black px-1 text-xs rounded-bl">
-                  {callRoom.callerName}
+                <p className="glass text-[0.80rem] capitalize text-white absolute bottom-2 left-2 px-3">
+                  {callRoom.callerID === myId
+                    ? callRoom.guestName
+                    : callRoom.callerName}
                 </p>
               </>
+            )) || (
+              <p className="absolute bottom-0 left-0 bg-black px-1 text-xs rounded-bl">
+                {isCalling && "Calling " + guestId}
+                {callRoom.isReceivingCall &&
+                  callRoom.callerName + " is calling"}
+              </p>
             )}
           </div>
         </>

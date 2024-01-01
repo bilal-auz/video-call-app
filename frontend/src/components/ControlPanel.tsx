@@ -6,6 +6,8 @@ function ControlPanel() {
     myName,
     setMyName,
     myId,
+    guestId,
+    setGuestId,
     makeCall,
     answerCall,
     leaveCall,
@@ -13,7 +15,7 @@ function ControlPanel() {
     isCalling,
     callRoom,
   } = useContext(SocketContext);
-  const [guestId, setGuestId] = React.useState<string>("");
+  // const [guestId, setGuestId] = React.useState<string>("");
   const [state, setState] = React.useState<string>("idle");
   const [micOn, setMicOn] = React.useState<boolean>(true);
   const handleMic = () => {};

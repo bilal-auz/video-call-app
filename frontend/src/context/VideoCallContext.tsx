@@ -21,11 +21,14 @@ interface VideoCallValues {
   setMyName: (name: string) => void;
   myId: string;
   setMyId: (id: string) => void;
+  guestId: string;
+  setGuestId: (id: string) => void;
   callRoom: {
     isReceivingCall: false;
     callerID: "";
     callerName: "";
     signalData: {};
+    guestName: "";
   };
   stream: MediaStream;
   myVideoRef: React.RefObject<HTMLVideoElement> | null;
@@ -44,11 +47,14 @@ const SocketContext = createContext<VideoCallValues>({
   setMyName: () => {},
   myId: "",
   setMyId: () => {},
+  guestId: "",
+  setGuestId: () => {},
   callRoom: {
     isReceivingCall: false,
     callerID: "",
     callerName: "",
     signalData: {},
+    guestName: "",
   },
   stream: {} as MediaStream,
   myVideoRef: null,
@@ -70,6 +76,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
   const [myId, setMyId] = useState<string>("sss");
 
   //call room data
+  const [guestId, setGuestId] = useState<string>("");
   const [callRoom, setCallRoom] = useState<any>({
     isReceivingCall: false,
     callerID: "",
@@ -135,10 +142,14 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
 
   const answerCall = () => {
     setGuestConnected(true);
+    callRoom.guestName = myName;
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
     peer.on("signal", (data: any) => {
-      socket.emit("answerCall", { signal: data, callRoom: callRoom });
+      socket.emit("answerCall", {
+        signal: data,
+        callRoom: callRoom,
+      });
     });
 
     peer.on("stream", (stream: any) => {
@@ -189,6 +200,8 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
         setMyName,
         myId,
         setMyId,
+        guestId,
+        setGuestId,
         callRoom,
         stream,
         myVideoRef,
