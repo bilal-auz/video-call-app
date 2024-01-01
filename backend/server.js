@@ -35,9 +35,9 @@ io.on("connection", (socket) => {
 
   socket.on("answerCall", (data) => {
     console.log("answer call");
-    io.to(data.to).emit("callAccepted", {
+    io.to(data.callRoom.callerID).emit("callAccepted", {
       signal: data.signal,
-      callerName: data.callerName,
+      newCallRoom: data.callRoom,
     });
   });
 
