@@ -46,7 +46,7 @@ function VideoPlayer() {
                 </p>
               </>
             )) || (
-              <p className="absolute bottom-0 left-0 bg-black px-1 text-xs rounded-bl">
+              <p className="glass text-[0.80rem] capitalize text-white absolute bottom-2 left-2 px-3">
                 {isCalling && "Calling " + guestId}
                 {callRoom.isReceivingCall &&
                   callRoom.callerName + " is calling"}

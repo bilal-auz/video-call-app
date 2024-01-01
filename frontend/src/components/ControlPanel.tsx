@@ -94,7 +94,7 @@ function ControlPanel() {
             </button>
           </div>
         ) : callRoom.isReceivingCall && callRoom.callerID !== myId ? (
-          <button className="btn" onClick={(e) => answerCall()}>
+          <button className="btn text-[#15E8D8]" onClick={(e) => answerCall()}>
             answer call
           </button>
         ) : (
