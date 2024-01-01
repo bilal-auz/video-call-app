@@ -17,13 +17,13 @@ function VideoPlayer() {
     <div className="flex flex-col md:flex-row justify-center items-center bg-[#1f272f] rounded-lg p-5">
       {(isCameraAvailable && (
         <>
-          <div className="flex justify-center items-center mb-5 md:mr-5 md:mb-0 w-80 h-60 relative rounded-lg ">
+          <div className="flex justify-center items-center mb-5 md:mr-5 md:mb-0 w-80 h-60 relative rounded-lg border-2 border-[#15E8D8] ">
             <video
               playsInline
               autoPlay
               ref={myVideoRef}
               muted
-              className="rounded-lg w-80 [transform:rotateY(180deg)] border-2 border-[#15E8D8]"
+              className="rounded-lg w-80 [transform:rotateY(180deg)]"
             ></video>
             <p className="glass text-[0.80rem] capitalize text-white absolute bottom-2 left-2 px-3">
               {myName}
