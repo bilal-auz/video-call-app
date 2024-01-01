@@ -7,6 +7,7 @@ function ControlPanel() {
     setMyName,
     myId,
     guestId,
+    stream,
     setGuestId,
     makeCall,
     answerCall,
@@ -18,7 +19,16 @@ function ControlPanel() {
   // const [guestId, setGuestId] = React.useState<string>("");
   const [state, setState] = React.useState<string>("idle");
   const [micOn, setMicOn] = React.useState<boolean>(true);
-  const handleMic = () => {};
+  const handleMic = () => {
+    if (stream) {
+      const audioTracks = stream.getAudioTracks();
+      audioTracks.forEach((track) => {
+        track.enabled = !micOn;
+      });
+    }
+
+    setMicOn(!micOn);
+  };
   useEffect(() => {}, []);
   return (
     <div className="flex flex-col md:flex-row  justify-around items-center w-full mt-5 bg-[#1f272f] rounded-lg p-5">
@@ -74,13 +84,13 @@ function ControlPanel() {
           <div className="flex flex-row justify-center">
             <button onClick={handleMic}>
               {(micOn && (
-                <img className="w-12" src="assets/icons/micOn.svg" alt="" />
+                <img className="w-9" src="assets/icons/micOn.svg" alt="" />
               )) || (
-                <img className="w-12" src="assets/icons/micOff.svg" alt="" />
+                <img className="w-9" src="assets/icons/micOff.svg" alt="" />
               )}
             </button>
             <button onClick={leaveCall}>
-              <img className="w-16" src="assets/icons/hangUp.svg" alt="" />
+              <img className="w-12" src="assets/icons/hangUp.svg" alt="" />
             </button>
           </div>
         ) : callRoom.isReceivingCall && callRoom.callerID !== myId ? (

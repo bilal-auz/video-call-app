@@ -90,6 +90,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
   const guestRef = useRef<HTMLVideoElement>(null);
   const peerRef = useRef<any>(null);
 
+  //call states
   const [isCameraAvailable, setIsCameraAvailable] = useState<boolean>(false);
   const [guestConnected, setGuestConnected] = useState<boolean>(false);
   const [isCalling, setIsCalling] = useState<boolean>(false);
