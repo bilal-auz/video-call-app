@@ -41,12 +41,8 @@ io.on("connection", (socket) => {
     });
   });
 
-  // socket.on("disconnect", () => {
-  //   socket.broadcast.emit("callEnd");
-  // });
-
-  socket.on("forceDisconnect", function () {
-    console.log("force disconnect");
-    socket.broadcast.emit("callEnd");
+  socket.on("endCall", (data) => {
+    socket.to(data.callRoom.guestId).emit("callEnded");
+    socket.to(data.callRoom.callerID).emit("callEnded");
   });
 });
