@@ -9,8 +9,7 @@ import React, {
 
 import { io } from "socket.io-client";
 const Peer = require("simple-peer");
-
-const socket = io("http://localhost:8080");
+const socket = io(process.env.REACT_APP_BACKEND_ENDPOINT as string);
 
 interface VideoCallContextProps {
   children: ReactNode;
