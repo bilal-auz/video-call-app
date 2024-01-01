@@ -36,6 +36,7 @@ interface VideoCallValues {
   leaveCall: () => void;
   isCameraAvailable: boolean;
   guestConnected: boolean;
+  isCalling: boolean;
 }
 
 const SocketContext = createContext<VideoCallValues>({
@@ -58,6 +59,7 @@ const SocketContext = createContext<VideoCallValues>({
   leaveCall: () => {},
   isCameraAvailable: false,
   guestConnected: false,
+  isCalling: false,
 });
 
 const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
@@ -83,6 +85,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
 
   const [isCameraAvailable, setIsCameraAvailable] = useState<boolean>(false);
   const [guestConnected, setGuestConnected] = useState<boolean>(false);
+  const [isCalling, setIsCalling] = useState<boolean>(false);
 
   const makeCall = (guestId: String) => {
     console.log("Calling: ", guestId);
@@ -91,7 +94,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
     if (myName == "") return alert("Please enter your name first");
 
     // setState("calling");
-    setGuestConnected(true);
+    setIsCalling(true);
     // setGuestName("Calling: " + guestId);
 
     // console.log("brefore call", stream);
@@ -121,6 +124,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
     //wait until the guest accept the call trigger the answer signal and start sharing
     socket.on("callAccepted", ({ signal, newCallRoom }) => {
       console.log("callAccepted: ", signal);
+      setIsCalling(false);
       setGuestConnected(true);
       setCallRoom(newCallRoom);
       peer.signal(signal);
@@ -162,7 +166,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
       .then((stream) => {
         setStream(stream);
         if (myVideoRef.current) {
-          myVideoRef.current.srcObject = stream;
+          // myVideoRef.current.srcObject = stream;
         }
       });
 
@@ -174,7 +178,6 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
 
     //handle incoming call and set call state
     socket.on("callUser", ({ callerID, callerName, signalData }) => {
-      setGuestConnected(true);
       setCallRoom({ isReceivingCall: true, callerID, callerName, signalData });
     });
   }, []);
@@ -196,6 +199,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
         leaveCall,
         isCameraAvailable,
         guestConnected,
+        isCalling,
       }}
     >
       {children}

@@ -10,6 +10,8 @@ function ControlPanel() {
     answerCall,
     leaveCall,
     guestConnected,
+    isCalling,
+    callRoom,
   } = useContext(SocketContext);
   const [guestId, setGuestId] = React.useState<string>("");
   const [state, setState] = React.useState<string>("idle");
@@ -66,7 +68,7 @@ function ControlPanel() {
             value={guestId}
           />
         </label>
-        {(guestConnected && (
+        {guestConnected ? (
           <div className="flex flex-row justify-center">
             <button onClick={handleMic}>
               {(micOn && (
@@ -79,17 +81,18 @@ function ControlPanel() {
               <img className="w-16" src="assets/icons/hangUp.svg" alt="" />
             </button>
           </div>
-        )) || (
+        ) : callRoom.isReceivingCall && callRoom.callerID !== myId ? (
+          <button className="btn" onClick={(e) => answerCall()}>
+            answer call
+          </button>
+        ) : (
           <button
             className="btn text-[#15E8D8]"
             onClick={(e) => makeCall(guestId)}
           >
-            Call
+            {isCalling ? "Calling..." : "Call guest"}
           </button>
         )}
-        <button className="btn" onClick={(e) => answerCall()}>
-          answer call
-        </button>
       </div>
     </div>
   );
