@@ -28,6 +28,7 @@ interface VideoCallValues {
     callerID: "";
     callerName: "";
     signalData: {};
+    guestId: "";
     guestName: "";
   };
   stream: MediaStream;
@@ -54,6 +55,7 @@ const SocketContext = createContext<VideoCallValues>({
     callerID: "",
     callerName: "",
     signalData: {},
+    guestId: "",
     guestName: "",
   },
   stream: {} as MediaStream,
@@ -112,22 +114,34 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
 
     //triger the signal event and send the data to the server
     // data here is the data requiered to connect the peers
-    peer.on("signal", (data: any) => {
-      socket.emit("callUser", {
-        userToCall: guestId,
-        signalData: data,
-        from: myId,
-        callerName: myName,
+    try {
+      peer.on("signal", (data: any) => {
+        socket.emit("callUser", {
+          userToCall: guestId,
+          signalData: data,
+          from: myId,
+          callerName: myName,
+        });
       });
-    });
 
-    //when the guest accept the call share the passed stream in guest peer init
-    peer.on("stream", (stream: any) => {
-      if (guestRef.current) {
-        console.log("streaming ", stream);
-        guestRef.current.srcObject = stream;
-      }
-    });
+      //when the guest accept the call share the passed stream in guest peer init
+      peer.on("stream", (stream: any) => {
+        if (guestRef.current) {
+          console.log("streaming ", stream);
+          guestRef.current.srcObject = stream;
+        }
+      });
+
+      peer.on("error", (err: any) => {
+        console.log("error: ", err);
+      });
+
+      peer.on("close", () => {
+        console.log("Connection closed or peer disconnected");
+      });
+    } catch (err) {
+      console.log(err);
+    }
 
     //wait until the guest accept the call trigger the answer signal and start sharing
     socket.on("callAccepted", ({ signal, newCallRoom }) => {
@@ -143,6 +157,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
 
   const answerCall = () => {
     setGuestConnected(true);
+    callRoom.guestId = myId;
     callRoom.guestName = myName;
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
@@ -157,6 +172,14 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
       if (guestRef.current) guestRef.current.srcObject = stream;
     });
 
+    peer.on("error", (err: any) => {
+      console.log("error: ", err);
+    });
+
+    peer.on("close", () => {
+      console.log("Connection closed or peer disconnected");
+    });
+
     peer.signal(callRoom.signalData);
     peerRef.current = peer;
 
@@ -164,12 +187,16 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
   };
 
   const leaveCall = () => {
-    console.log("leave call");
+    setGuestConnected(false);
+    socket.emit("endCall", { callRoom: callRoom });
+    peerRef.current.destroy();
+    window.location.reload();
   };
 
   useEffect(() => {
-    if (!navigator?.mediaDevices?.getUserMedia)
+    if (!navigator?.mediaDevices?.getUserMedia) {
       return setIsCameraAvailable(false);
+    }
 
     //get camera
     setIsCameraAvailable(true);
@@ -178,7 +205,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
       .then((stream) => {
         setStream(stream);
         if (myVideoRef.current) {
-          // myVideoRef.current.srcObject = stream;
+          myVideoRef.current.srcObject = stream;
         }
       });
 
@@ -191,6 +218,11 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
     //handle incoming call and set call state
     socket.on("callUser", ({ callerID, callerName, signalData }) => {
       setCallRoom({ isReceivingCall: true, callerID, callerName, signalData });
+    });
+
+    socket.on("callEnded", () => {
+      console.log(`${myName} left the call}`);
+      window.location.reload();
     });
   }, []);
 
