@@ -108,7 +108,17 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
     // console.log("brefore call", stream);
 
     //init the peer with data->stream
-    const peer = new Peer({ initiator: true, trickle: false, stream });
+    const peer = new Peer({
+      initiator: true,
+      trickle: false,
+      stream,
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          // { urls: "stun:global.stun.twilio.com:3478?transport=udp" },
+        ],
+      },
+    });
 
     //triger the signal event and send the data to the server
     // data here is the data requiered to connect the peers
