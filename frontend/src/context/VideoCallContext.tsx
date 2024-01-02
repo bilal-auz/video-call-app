@@ -114,8 +114,14 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
       stream,
       config: {
         iceServers: [
-          { urls: "stun:stun.l.google.com:19302" },
-          // { urls: "stun:global.stun.twilio.com:3478?transport=udp" },
+          { urls: `${process.env.REACT_APP_STUN_SERVER as string}` },
+          {
+            urls: `${process.env.REACT_APP_TURN_SERVER as string}`,
+            username: `${process.env.REACT_APP_TURN_USERNAME as string}`,
+            credential: `${
+              process.env.REACT_APP_TURN_SERVER_CREDENTIAL as string
+            }`,
+          },
         ],
       },
     });
