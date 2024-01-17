@@ -45,4 +45,14 @@ io.on("connection", (socket) => {
     socket.to(data.callRoom.guestId).emit("callEnded");
     socket.to(data.callRoom.callerID).emit("callEnded");
   });
+
+  socket.on("sendMessage", (data) => {
+    console.log(`send message from ${data.sender} to ${data.receiver}`);
+    io.to(data.receiver).emit("newMessage", {
+      content: data.content,
+      receiver: data.receiver,
+      sender: data.sender,
+      time: data.time,
+    });
+  });
 });
