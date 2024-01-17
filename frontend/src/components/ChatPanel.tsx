@@ -56,7 +56,7 @@ const ChatPanel: React.FC<ChatPanelProps> = () => {
   };
 
   return (
-    <div className="bg-[#1f272f] rounded-lg flex flex-col justify-around h-full">
+    <div className="flex flex-col justify-around bg-[#1f272f] rounded-lg h-[481px]">
       <div
         className="bg-[#1f272f] h-5/6 overflow-y-scroll scroll-smooth p-2"
         id="chats"

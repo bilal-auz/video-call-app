@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        <div className="w-screen overflow-y-scroll overflow-x-hidden absolute inset-0">
+        <div className="w-screen h-full overflow-y-scroll overflow-x-hidden absolute inset-0">
           <div className="flex flex-col justify-center items-center bg-[#161b21]">
             <h1 className="text-4xl font-bold mb-1 text-[#15E8D8]">
               Video Call App
@@ -45,15 +45,15 @@ function App() {
               </a>{" "}
             </p>
             <div className="flex flex-col justify-start items-center mt-5">
-              <div className="flex flex-row justify-start items-start h-[520px] p-5">
-                <div className="flex flex-col justify-start items-center mr-5">
+              <div className="flex flex-col lg:flex-row justify-start items-center lg:items-start h-full lg:h-[520px] p-5">
+                <div className="flex flex-col justify-start items-center mr-5 mb-5">
                   <VideoPlayer />
 
                   <ControlPanel />
                 </div>
                 <ChatPanel />
               </div>
-              <div className="footer flex flex-row items-center justify-around text-base-content rounded pt-5 pb-5">
+              <div className="footer flex flex-row items-center justify-center text-base-content rounded pt-5 pb-5">
                 <aside>
                   <p className="inline text-[#485c70]  ml-2 text-base">
                     Copyright © 2023 By{" "}
