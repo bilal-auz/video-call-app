@@ -9,9 +9,9 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <VideoCallContext>
-      <App />
-    </VideoCallContext>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <VideoCallContext>
+    <App />
+  </VideoCallContext>
+  // </React.StrictMode>
 );

@@ -46,3 +46,14 @@
     transform: rotate(360deg);
   }
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #15E8D8;
+  border-radius: 5px;
+}
