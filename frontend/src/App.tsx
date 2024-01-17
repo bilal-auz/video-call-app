@@ -1,4 +1,5 @@
 import "./App.css";
+import ChatPanel from "./components/ChatPanel";
 import ControlPanel from "./components/ControlPanel";
 import VideoPlayer from "./components/VideoPlayer";
 
@@ -44,9 +45,14 @@ function App() {
               </a>{" "}
             </p>
             <div className="flex flex-col justify-start items-center mt-5">
-              <VideoPlayer />
+              <div className="flex flex-row justify-start items-start h-[520px] p-5">
+                <div className="flex flex-col justify-start items-center mr-5">
+                  <VideoPlayer />
 
-              <ControlPanel />
+                  <ControlPanel />
+                </div>
+                <ChatPanel />
+              </div>
               <div className="footer flex flex-row items-center justify-around text-base-content rounded pt-5 pb-5">
                 <aside>
                   <p className="inline text-[#485c70]  ml-2 text-base">

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 const Peer = require("simple-peer");
 const socket = io(process.env.REACT_APP_BACKEND_ENDPOINT as string);
 
@@ -33,12 +33,13 @@ interface VideoCallValues {
   myVideoRef: React.RefObject<HTMLVideoElement> | null;
   guestRef: React.RefObject<HTMLVideoElement> | null;
   peerRef: React.RefObject<any> | null;
-  makeCall: (guestId: String) => void;
+  makeCall: (guestId: string) => void;
   answerCall: () => void;
   leaveCall: () => void;
   isCameraAvailable: boolean;
   guestConnected: boolean;
   isCalling: boolean;
+  socket: Socket;
 }
 
 const SocketContext = createContext<VideoCallValues>({
@@ -66,6 +67,7 @@ const SocketContext = createContext<VideoCallValues>({
   isCameraAvailable: false,
   guestConnected: false,
   isCalling: false,
+  socket: socket,
 });
 
 const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
@@ -95,7 +97,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
   const [guestConnected, setGuestConnected] = useState<boolean>(false);
   const [isCalling, setIsCalling] = useState<boolean>(false);
 
-  const makeCall = (guestId: String) => {
+  const makeCall = (guestId: string) => {
     console.log("Calling: ", guestId);
 
     if (!isCameraAvailable) return alert("Camera is not available");
@@ -173,6 +175,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
     setGuestConnected(true);
     callRoom.guestId = myId;
     callRoom.guestName = myName;
+    setGuestId(callRoom.callerID);
     const peer = new Peer({ initiator: false, trickle: false, stream });
 
     peer.on("signal", (data: any) => {
@@ -260,6 +263,7 @@ const VideoCallContext: React.FunctionComponent<VideoCallContextProps> = ({
         isCameraAvailable,
         guestConnected,
         isCalling,
+        socket,
       }}
     >
       {children}
