@@ -23,7 +23,7 @@ function VideoPlayer() {
               autoPlay
               ref={myVideoRef}
               muted
-              className="rounded-lg w-80 [transform:rotateY(180deg)]"
+              className="rounded-lg w-80 h-60 [transform:rotateY(180deg)]"
             ></video>
             <p className="glass text-[0.80rem] capitalize text-white absolute bottom-2 left-2 px-3">
               {myName}

@@ -53,6 +53,8 @@ const ChatPanel: React.FC<ChatPanelProps> = () => {
     socket.emit("sendMessage", newMessage);
 
     setMessages([...messages, newMessage]);
+
+    setNewMessageContent("");
   };
 
   return (
