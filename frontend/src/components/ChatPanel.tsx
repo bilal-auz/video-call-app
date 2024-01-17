@@ -57,8 +57,11 @@ const ChatPanel: React.FC<ChatPanelProps> = () => {
 
   return (
     <div className="flex flex-col justify-around bg-[#1f272f] rounded-lg h-[481px]">
+      <div className="flex flex-row justify-center items-center w-full">
+        <p className="text-[#15E8D8]">Chat</p>
+      </div>
       <div
-        className="bg-[#1f272f] h-5/6 overflow-y-scroll scroll-smooth p-2"
+        className="bg-[#1f272f] h-4/6 overflow-y-scroll scroll-smooth p-2"
         id="chats"
       >
         {messages.map((message, index) => {
@@ -91,14 +94,19 @@ const ChatPanel: React.FC<ChatPanelProps> = () => {
         <input
           className="input w-8/12 focus:border-0 focus:outline-[#15E8D8] mr-2"
           type="text"
-          placeholder="Type a message..."
+          disabled={!guestConnected}
+          placeholder={guestConnected ? "Type a message..." : "No one here"}
           value={newMessageContent}
           onChange={(e) => setNewMessageContent(e.target.value)}
           onKeyDown={(e) => {
             e.key === "Enter" && sendMessage();
           }}
         />
-        <button className="btn text-[#15E8D8]" onClick={sendMessage}>
+        <button
+          className="btn text-[#15E8D8]"
+          onClick={sendMessage}
+          disabled={!guestConnected}
+        >
           send
         </button>
       </div>
